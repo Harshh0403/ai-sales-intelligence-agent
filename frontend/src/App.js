@@ -1,52 +1,39 @@
-import { useEffect } from "react";
+import { useState } from "react";
 import "@/App.css";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import axios from "axios";
+import Sidebar from "@/components/Sidebar";
+import Dashboard from "@/pages/Dashboard";
+import LeadIntelligence from "@/pages/LeadIntelligence";
+import BusinessInsights from "@/pages/BusinessInsights";
+import Recommendations from "@/pages/Recommendations";
+import UploadData from "@/pages/UploadData";
+import LeadStrategy from "@/pages/LeadStrategy";
+import EnjayEcosystem from "@/pages/EnjayEcosystem";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
-
-const Home = () => {
-  const helloWorldApi = async () => {
-    try {
-      const response = await axios.get(`${API}/`);
-      console.log(response.data.message);
-    } catch (e) {
-      console.error(e, `errored out requesting / api`);
-    }
-  };
-
-  useEffect(() => {
-    helloWorldApi();
-  }, []);
-
-  return (
-    <div>
-      <header className="App-header">
-        <a
-          className="App-link"
-          href="https://emergent.sh"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <img src="https://avatars.githubusercontent.com/in/1201222?s=120&u=2686cf91179bbafbc7a71bfbc43004cf9ae1acea&v=4" />
-        </a>
-        <p className="mt-5">Building something incredible ~!</p>
-      </header>
-    </div>
-  );
-};
+export const API = `${BACKEND_URL}/api`;
 
 function App() {
+  const [activePage, setActivePage] = useState("dashboard");
+  const [leads, setLeads] = useState([]);
+  const [analysis, setAnalysis] = useState(null);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+
+  const pages = {
+    dashboard: <Dashboard leads={leads} setLeads={setLeads} analysis={analysis} setAnalysis={setAnalysis} isAnalyzing={isAnalyzing} setIsAnalyzing={setIsAnalyzing} />,
+    leads: <LeadIntelligence leads={leads} setLeads={setLeads} />,
+    insights: <BusinessInsights analysis={analysis} />,
+    recommendations: <Recommendations analysis={analysis} />,
+    upload: <UploadData leads={leads} setLeads={setLeads} />,
+    strategy: <LeadStrategy leads={leads} setLeads={setLeads} />,
+    ecosystem: <EnjayEcosystem />,
+  };
+
   return (
-    <div className="App">
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />}>
-            <Route index element={<Home />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
+    <div className="app-layout">
+      <Sidebar activePage={activePage} setActivePage={setActivePage} />
+      <main className="main-content">
+        {pages[activePage]}
+      </main>
     </div>
   );
 }
