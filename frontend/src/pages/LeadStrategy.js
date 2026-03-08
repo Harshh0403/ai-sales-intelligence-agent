@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
-import { API } from "@/App";
-import { formatINR, getScoreColor } from "@/lib/helpers";
+import { API } from "../App";
+import { formatINR, getScoreColor } from "../lib/helpers";
 import { Brain, Loader2, ChevronRight, Target, MessageCircle, Calendar, Shield } from "lucide-react";
 
 export default function LeadStrategy({ leads, setLeads }) {
