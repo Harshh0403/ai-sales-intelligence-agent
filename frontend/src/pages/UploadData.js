@@ -1,9 +1,9 @@
 import { useState, useRef } from "react";
 import axios from "axios";
-import { API } from "@/App";
+import { API } from "../App";
 import Papa from "papaparse";
 import { Upload, FileSpreadsheet, CheckCircle, AlertCircle, Loader2, Database } from "lucide-react";
-import { formatINR } from "@/lib/helpers";
+import { formatINR } from "../lib/helpers";
 
 export default function UploadData({ leads, setLeads }) {
   const [uploading, setUploading] = useState(false);
