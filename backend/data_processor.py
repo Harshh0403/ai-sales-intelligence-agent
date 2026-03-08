@@ -13,29 +13,36 @@ def process_csv_data(records: list) -> pd.DataFrame:
 
 
 def calculate_lead_scores(df: pd.DataFrame) -> list:
+    """
+    Lead Score Prediction Model
+    Scoring rules:
+      - High interest = +40, Medium = +25, Low = +10
+      - Deal value > ₹3,00,000 = +30, > ₹2,00,000 = +20
+      - Last contact within 7 days = +20, within 14 days = +10
+    Normalized between 0 and 100.
+    """
     scores = []
     today = datetime.now()
+    MAX_RAW = 90  # 40 + 30 + 20
 
     for _, row in df.iterrows():
-        score = 50  # base
+        raw_score = 0
 
         # Interest level factor
         interest = str(row.get("interest_level", "")).strip().lower()
         if interest == "high":
-            score += 25
+            raw_score += 40
         elif interest == "medium":
-            score += 10
+            raw_score += 25
         else:
-            score -= 10
+            raw_score += 10
 
         # Deal value factor
         deal_val = float(row.get("deal_value_inr", 0))
-        if deal_val >= 500000:
-            score += 15
-        elif deal_val >= 200000:
-            score += 10
-        elif deal_val >= 50000:
-            score += 5
+        if deal_val > 300000:
+            raw_score += 30
+        elif deal_val > 200000:
+            raw_score += 20
 
         # Recency factor
         last_contact = row.get("last_contact_date")
@@ -48,24 +55,13 @@ def calculate_lead_scores(df: pd.DataFrame) -> list:
             if last_contact:
                 days_since = (today - last_contact).days
                 if days_since <= 7:
-                    score += 15
+                    raw_score += 20
                 elif days_since <= 14:
-                    score += 8
-                elif days_since <= 30:
-                    score += 2
-                else:
-                    score -= 10
+                    raw_score += 10
 
-        # Notes engagement factor
-        notes = str(row.get("notes", "")).lower()
-        if any(w in notes for w in ["ready to sign", "budget approved", "poc completed"]):
-            score += 10
-        elif any(w in notes for w in ["demo", "impressed", "upgrade"]):
-            score += 5
-        elif any(w in notes for w in ["competitor", "budget constraints"]):
-            score -= 5
-
-        scores.append(max(0, min(100, score)))
+        # Normalize to 0-100
+        normalized = min(100, max(0, int((raw_score / MAX_RAW) * 100)))
+        scores.append(normalized)
 
     return scores
 

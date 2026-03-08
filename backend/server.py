@@ -6,16 +6,25 @@ import os
 import logging
 import io
 import csv
-import json
 from pathlib import Path
 from pydantic import BaseModel, Field, ConfigDict
-from typing import List, Optional
+from typing import List
 import uuid
 from datetime import datetime, timezone
+import pandas as pd
 
 from sample_data import get_sample_records
-from data_processor import process_csv_data, calculate_lead_scores, detect_risks, generate_statistics, format_inr
-from ai_engine import analyze_leads, generate_lead_strategy, generate_outreach
+from data_processor import process_csv_data, calculate_lead_scores, detect_risks, generate_statistics
+from ai_engine import generate_executive_summary_gemini
+from local_ai_engine import (
+    generate_local_insights,
+    generate_local_recommendations,
+    generate_local_risk_alerts,
+    generate_local_conversion_forecast,
+    generate_local_executive_summary,
+    generate_local_strategy,
+    generate_local_outreach,
+)
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -48,19 +57,6 @@ class LeadRecord(BaseModel):
     created_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
 
 
-class AnalysisResult(BaseModel):
-    model_config = ConfigDict(extra="ignore")
-    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
-    executive_summary: str = ""
-    business_insights: list = []
-    recommendations: list = []
-    risk_alerts: list = []
-    conversion_forecast: str = ""
-    statistics: dict = {}
-    risks: list = []
-    created_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
-
-
 # Routes
 @api_router.get("/")
 async def root():
@@ -72,7 +68,6 @@ async def get_leads():
     leads = await db.leads.find({}, {"_id": 0}).to_list(1000)
     if not leads:
         sample = get_sample_records()
-        import pandas as pd
         df = process_csv_data(sample)
         scores = calculate_lead_scores(df)
         for i, record in enumerate(sample):
@@ -90,14 +85,11 @@ async def upload_csv(file: UploadFile = File(...)):
     text = content.decode("utf-8")
     reader = csv.DictReader(io.StringIO(text))
     records = list(reader)
-
     if not records:
         return {"error": "Empty CSV file"}
 
-    import pandas as pd
     df = process_csv_data(records)
     scores = calculate_lead_scores(df)
-
     await db.leads.delete_many({})
 
     for i, record in enumerate(records):
@@ -117,10 +109,8 @@ async def upload_json(data: dict):
     if not records:
         return {"error": "No records provided"}
 
-    import pandas as pd
     df = process_csv_data(records)
     scores = calculate_lead_scores(df)
-
     await db.leads.delete_many({})
 
     for i, record in enumerate(records):
@@ -136,24 +126,38 @@ async def upload_json(data: dict):
 
 @api_router.post("/analyze")
 async def analyze_data():
+    """
+    Main analysis endpoint.
+    - Executive Summary: Gemini (with local fallback)
+    - Everything else: Local AI engine (pandas/numpy)
+    """
     leads = await db.leads.find({}, {"_id": 0}).to_list(1000)
     if not leads:
         return {"error": "No leads data found. Upload a CSV first."}
 
-    import pandas as pd
     df = process_csv_data(leads)
     stats = generate_statistics(df)
     risks = detect_risks(df)
 
-    ai_result = await analyze_leads(stats, leads)
+    # Local AI — always works, no external dependency
+    business_insights = generate_local_insights(df, stats)
+    recommendations = generate_local_recommendations(df, leads)
+    risk_alerts = generate_local_risk_alerts(risks)
+    conversion_forecast = generate_local_conversion_forecast(stats, leads)
+
+    # Gemini — only for executive summary, with local fallback
+    executive_summary = await generate_executive_summary_gemini(stats, leads)
+    if not executive_summary:
+        logger.info("Gemini unavailable — using local executive summary.")
+        executive_summary = generate_local_executive_summary(stats, leads)
 
     analysis = {
         "id": str(uuid.uuid4()),
-        "executive_summary": ai_result.get("executive_summary", ""),
-        "business_insights": ai_result.get("business_insights", []),
-        "recommendations": ai_result.get("recommendations", []),
-        "risk_alerts": ai_result.get("risk_alerts", []),
-        "conversion_forecast": ai_result.get("conversion_forecast", ""),
+        "executive_summary": executive_summary,
+        "business_insights": business_insights,
+        "recommendations": recommendations,
+        "risk_alerts": risk_alerts,
+        "conversion_forecast": conversion_forecast,
         "statistics": stats,
         "risks": [r for r in risks if r["risk_level"] != "low"],
         "created_at": datetime.now(timezone.utc).isoformat()
@@ -161,7 +165,6 @@ async def analyze_data():
 
     await db.analysis_results.delete_many({})
     await db.analysis_results.insert_one({k: v for k, v in analysis.items()})
-
     analysis_clean = await db.analysis_results.find_one({}, {"_id": 0})
     return analysis_clean
 
@@ -180,10 +183,9 @@ async def get_dashboard_stats():
     if not leads:
         return {"total_leads": 0, "total_deal_value": 0, "avg_deal_value": 0}
 
-    import pandas as pd
     df = process_csv_data(leads)
     stats = generate_statistics(df)
-    scores = [lead.get("lead_score", 0) for lead in leads]
+    scores = [lead_rec.get("lead_score", 0) for lead_rec in leads]
     stats["avg_lead_score"] = int(sum(scores) / len(scores)) if scores else 0
     stats["high_score_leads"] = sum(1 for s in scores if s >= 70)
     return stats
@@ -191,19 +193,21 @@ async def get_dashboard_stats():
 
 @api_router.post("/lead-strategy/{lead_id}")
 async def get_lead_strategy(lead_id: str):
+    """Local AI strategy — no Gemini dependency."""
     lead = await db.leads.find_one({"id": lead_id}, {"_id": 0})
     if not lead:
         return {"error": "Lead not found"}
-    strategy = await generate_lead_strategy(lead)
+    strategy = generate_local_strategy(lead)
     return {"lead": lead, "strategy": strategy}
 
 
 @api_router.post("/outreach/{lead_id}")
 async def get_outreach(lead_id: str):
+    """Local AI outreach — no Gemini dependency."""
     lead = await db.leads.find_one({"id": lead_id}, {"_id": 0})
     if not lead:
         return {"error": "Lead not found"}
-    outreach = await generate_outreach(lead)
+    outreach = generate_local_outreach(lead)
     return {"lead": lead, "outreach": outreach}
 
 
@@ -215,10 +219,8 @@ async def get_sample_data():
 @api_router.post("/load-sample")
 async def load_sample_data():
     sample = get_sample_records()
-    import pandas as pd
     df = process_csv_data(sample)
     scores = calculate_lead_scores(df)
-
     await db.leads.delete_many({})
 
     for i, record in enumerate(sample):
