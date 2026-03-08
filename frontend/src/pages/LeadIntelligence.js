@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
-import { API } from "@/App";
-import { formatINR, getScoreColor, getScoreLabel } from "@/lib/helpers";
+import { API } from "../App";
+import { formatINR, getScoreColor, getScoreLabel } from "../lib/helpers";
 import { Search, ArrowUpDown, MessageSquare, Loader2, X } from "lucide-react";
 
 export default function LeadIntelligence({ leads, setLeads }) {
