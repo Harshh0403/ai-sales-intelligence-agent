@@ -1,0 +1,159 @@
+{
+  "project_name": "AI Sales Intelligence Agent",
+  "design_philosophy": {
+    "theme_mode": "dark",
+    "persona": "E1 - The Digital Botanist",
+    "concept": "Cyber-Nature Intelligence: A fusion of high-frequency trading precision with the organic growth of a digital ecosystem. Data is visualized as living, growing entities.",
+    "emotional_tone": "Professional, Futuristic, Trusted, Wealth-Generating",
+    "core_principles": [
+      "Fusion over Imitation: Mix Fintech precision with Botanical growth aesthetics.",
+      "Density with Breath: High data density (Bento grids) balanced by deep negative space.",
+      "Tracing Beams: Use subtle animated borders to guide the eye.",
+      "Glass & Light: UI elements should feel like obsidian or dark glass with emerald light refraction."
+    ]
+  },
+  "typography": {
+    "font_family": {
+      "heading": "Outfit, sans-serif",
+      "body": "Plus Jakarta Sans, sans-serif",
+      "mono": "JetBrains Mono, monospace"
+    },
+    "installation_command": "npm install @fontsource/outfit @fontsource/plus-jakarta-sans @fontsource/jetbrains-mono",
+    "scale": {
+      "h1": "text-4xl md:text-6xl font-bold tracking-tight",
+      "h2": "text-3xl md:text-4xl font-semibold tracking-tight",
+      "h3": "text-2xl font-medium tracking-tight",
+      "body": "text-base leading-relaxed text-muted-foreground",
+      "small": "text-sm font-medium uppercase tracking-wider text-muted-foreground/80",
+      "kpi_value": "text-4xl font-mono font-bold tracking-tighter text-foreground"
+    }
+  },
+  "colors": {
+    "palette_name": "Deep Emerald Void",
+    "css_variables": {
+      ":root": {
+        "--background": "150 30% 2%",
+        "--foreground": "150 10% 98%",
+        "--card": "150 25% 4%",
+        "--card-foreground": "150 10% 98%",
+        "--popover": "150 25% 4%",
+        "--popover-foreground": "150 10% 98%",
+        "--primary": "150 100% 40%",
+        "--primary-foreground": "150 10% 5%",
+        "--secondary": "150 20% 12%",
+        "--secondary-foreground": "150 10% 98%",
+        "--muted": "150 20% 10%",
+        "--muted-foreground": "150 10% 60%",
+        "--accent": "150 40% 15%",
+        "--accent-foreground": "150 10% 98%",
+        "--destructive": "30 100% 50%",
+        "--destructive-foreground": "0 0% 100%",
+        "--border": "150 20% 12%",
+        "--input": "150 20% 12%",
+        "--ring": "150 100% 40%",
+        "--radius": "0.3rem"
+      }
+    },
+    "tailwind_config_extension": {
+      "colors": {
+        "emerald": {
+          "950": "#020905",
+          "900": "#064e3b",
+          "800": "#065f46",
+          "700": "#047857",
+          "600": "#059669",
+          "500": "#10b981",
+          "400": "#34d399",
+          "300": "#6ee7b7",
+          "200": "#a7f3d0",
+          "100": "#d1fae5",
+          "50": "#ecfdf5"
+        },
+        "void": "#010301"
+      }
+    },
+    "usage_rules": {
+      "primary_action": "bg-primary text-primary-foreground hover:bg-primary/90 shadow-[0_0_20px_rgba(16,185,129,0.3)]",
+      "surface_card": "bg-card border border-border/50 shadow-sm backdrop-blur-sm",
+      "risk_high": "text-orange-500",
+      "risk_medium": "text-yellow-500",
+      "risk_low": "text-emerald-500",
+      "chart_gradients": [
+        "#10b981",
+        "#34d399",
+        "#059669",
+        "#064e3b"
+      ]
+    }
+  },
+  "layout": {
+    "spacing_system": "Use generous padding. Cards should have p-6 or p-8. Sections separated by py-12.",
+    "container_width": "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8",
+    "grid_system": "Bento Grid: grid-cols-1 md:grid-cols-12 gap-6",
+    "sidebar": "w-64 border-r border-border/40 bg-card/50 backdrop-blur-xl h-screen fixed left-0 top-0 z-40"
+  },
+  "components": {
+    "buttons": {
+      "default": "rounded-md font-medium transition-all duration-300 active:scale-95",
+      "primary": "bg-primary text-primary-foreground hover:bg-primary/90 shadow-[0_0_15px_-3px_rgba(16,185,129,0.4)] hover:shadow-[0_0_25px_-5px_rgba(16,185,129,0.6)]",
+      "outline": "border border-primary/20 bg-transparent hover:bg-primary/10 text-primary hover:border-primary/50",
+      "ghost": "hover:bg-accent hover:text-accent-foreground"
+    },
+    "cards": {
+      "base": "rounded-lg border border-border/40 bg-card/60 backdrop-blur-md shadow-lg",
+      "interactive": "hover:border-primary/50 transition-colors duration-300 cursor-pointer group"
+    },
+    "inputs": {
+      "base": "bg-secondary/50 border-border/50 focus:border-primary focus:ring-1 focus:ring-primary/50 transition-all rounded-md"
+    },
+    "charts": {
+      "library": "Recharts",
+      "style": "Minimalist. Remove grid lines where possible. Use gradients for areas. Tooltips must be custom styled (dark bg, emerald border).",
+      "colors": {
+        "lead_score": ["#10b981", "#064e3b"],
+        "deal_value": ["#34d399", "#059669"],
+        "conversion": "#10b981"
+      }
+    }
+  },
+  "visual_enhancers": {
+    "glassmorphism": "backdrop-blur-xl bg-black/40 border border-white/5",
+    "glow_effects": "shadow-[0_0_30px_-10px_rgba(16,185,129,0.3)]",
+    "gradients": {
+      "subtle_bg": "bg-gradient-to-b from-background to-emerald-950/20",
+      "text_highlight": "bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-emerald-600"
+    },
+    "animation": {
+      "hover": "transition-all duration-300 ease-out",
+      "enter": "animate-in fade-in zoom-in-95 duration-500"
+    }
+  },
+  "motion": {
+    "libraries": [
+      "framer-motion"
+    ],
+    "patterns": {
+      "page_load": "Staggered fade-in of grid items.",
+      "hover_card": "Slight lift (-translate-y-1) and glow intensification.",
+      "list_items": "Slide in from bottom with delay."
+    }
+  },
+  "icons": {
+    "library": "lucide-react",
+    "style": "Stroke width 1.5px or 2px. Color: text-muted-foreground (default) -> text-primary (active)."
+  },
+  "universal_guidelines": [
+    "NO bright red. Use Burnt Orange (#f97316) for errors/risk.",
+    "Dark Mode ONLY. Do not implement a light mode toggle unless requested.",
+    "Indian Rupees (₹) for all currency.",
+    "Use 'Data-TestId' attributes for all interactive elements.",
+    "Do NOT use 'Inter' for headings. Use 'Outfit'.",
+    "Charts must use the green palette. No rainbow charts.",
+    "Lead Scores should use a progress bar visual: Emerald (High), Yellow (Med), Orange (Low)."
+  ],
+  "image_search_terms": {
+    "logo": "abstract geometric green logo technology",
+    "user_avatar": "professional business portrait headshot",
+    "background_texture": "abstract digital network green dark background"
+  }
+}
