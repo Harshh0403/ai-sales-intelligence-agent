@@ -64,12 +64,15 @@ Generate at least 5 business insights and 5 recommendations. All monetary values
             "conversion_forecast": "Unable to parse structured forecast"
         }
     except Exception as e:
+        error_msg = str(e)
+        if "429" in error_msg or "quota" in error_msg.lower() or "resource" in error_msg.lower():
+            error_msg = "Gemini API quota exceeded. Please wait a moment or upgrade your Google AI Studio plan, then try again."
         return {
-            "executive_summary": f"AI analysis encountered an error: {str(e)}",
+            "executive_summary": f"AI analysis note: {error_msg}",
             "business_insights": [],
             "recommendations": [],
             "risk_alerts": [],
-            "conversion_forecast": "Error in forecast generation"
+            "conversion_forecast": "Retry analysis after quota resets"
         }
 
 
