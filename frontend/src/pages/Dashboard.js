@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
 import axios from "axios";
-import { API } from "@/App";
-import { formatINR, getScoreColor } from "@/lib/helpers";
+import { API } from "../App";
+import { formatINR, getScoreColor } from "../lib/helpers";
 import { TrendingUp, Users, IndianRupee, Target, Zap, BarChart3, Activity, Loader2, Layers } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, AreaChart, Area, RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis } from "recharts";
 
