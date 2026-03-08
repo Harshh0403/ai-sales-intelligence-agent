@@ -27,20 +27,24 @@ Build an AI-powered SaaS web app for CRM lead analysis using Google Gemini API. 
 
 ## What's Been Implemented (March 8, 2026)
 - ✅ Full FastAPI backend with 10+ API endpoints
-- ✅ Google Gemini AI integration (gemini-2.0-flash)
-- ✅ Lead scoring algorithm (interest + deal value + recency + engagement)
-- ✅ Risk detection engine
-- ✅ Statistical analysis with pandas/numpy
+- ✅ Google Gemini AI integration (gemini-2.0-flash) — ONLY for executive summary
+- ✅ Local AI Intelligence Engine (pandas/numpy) — handles ALL other features
+- ✅ Lead scoring model: High=+40, Medium=+25, Low=+10, Deal>₹3L=+30, Deal>₹2L=+20, Contact≤7d=+20, ≤14d=+10, normalized 0-100
+- ✅ Local lead strategy advisor with conversion probability, strategy, communication approach, next actions
+- ✅ Local outreach generator with subject, message, call script, channel, follow-up
+- ✅ Local business insights engine (8 insight types from data patterns)
+- ✅ Local recommendations engine (9 actionable items)
+- ✅ Risk detection engine with 3 alert categories
+- ✅ Conversion forecast (hot/warm/cold pipeline projection)
+- ✅ Graceful Gemini fallback — app NEVER crashes on API failure
 - ✅ Sample dataset (40 Indian leads, Enjay products)
 - ✅ Dashboard with KPIs, 5 interactive charts
-- ✅ Lead Intelligence table with search, sort, outreach
-- ✅ Business Insights page
-- ✅ Recommendations page with at-risk leads
-- ✅ Lead Strategy Advisor (per-lead AI strategy)
+- ✅ Lead Intelligence table with search, sort, outreach buttons
 - ✅ CSV Upload with PapaParse + sample data loader
 - ✅ Enjay Product Ecosystem page (6 products + scalability roadmap)
 - ✅ Deep Emerald Void theme (dark, glassmorphism, emerald green)
 - ✅ INR formatting throughout
+- ✅ Score bars in emerald green shades
 
 ## Prioritized Backlog
 ### P0 (Critical)
